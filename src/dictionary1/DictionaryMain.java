@@ -11,7 +11,7 @@ public abstract class DictionaryMain
 
     public static  int vrem = 0;
 
-   public static HashMap<String,String> mapOsn = new LinkedHashMap();
+    public static HashMap<String,String> mapOsn = new LinkedHashMap();
     static void complete(String filename) throws IOException {// Запуск программы
         mapOsn =createMap(filename);
         mainMenu(filename,mapOsn);
