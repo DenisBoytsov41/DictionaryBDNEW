@@ -11,14 +11,20 @@ import java.util.Scanner;
 
 public class DictionaryFirstTapy extends DictionaryMain{
 
-    int lengs = 4;
-    String regect ="^[a-zA-Z0-9]+$";
+    static String regect1 ="[a-zA-Z]{4}";
+    static String regect2 ="\\d{5}";
     public DictionaryFirstTapy(String filename) throws IOException {
-        DictionaryMain.complete(filename);
+        validate();
+        DictionaryMain.mainMenu(filename,DictionaryMain.mapOsn);
     }
+
+    public DictionaryFirstTapy() {
+        validate();
+    }
+
     @Override
     protected void validate() {
-        DictionaryMain.rege = regect;
-        DictionaryMain.keyLen = lengs;
+        DictionaryMain.regeKey = regect1;
+        DictionaryMain.regeValue = regect2;
     }
 }
