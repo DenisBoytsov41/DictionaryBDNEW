@@ -137,12 +137,14 @@ public abstract class DictionaryMain
             {
                 String key = entry.getKey();
                 String value = entry.getValue();
-                if (!fileContains(writer, k, v,filename))
-                    deleteInFile(k,v,filename);
                 if (!fileContains(writer, key, value,filename)) {
                     writer.write(key + " " + value);
                     writer.newLine();
                 }
+            }
+            if (fileContains(writer, k, v,filename)) {
+                writer.close();
+                deleteInFile(k, v, filename);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -172,8 +174,9 @@ public abstract class DictionaryMain
         System.out.println("Введён ключ: "+ key);
         if (map.containsKey(key))
         {
+            String valueKey = (String) map.get(key);
             map.remove(key);
-            writeFile(filename, map,key,(String)map.get(key));
+            writeFile(filename, map,key,valueKey);
             System.out.println("Значение удалено успешно");
         }
         else System.out.println("Такого значения в словаре нет");
@@ -273,20 +276,29 @@ public abstract class DictionaryMain
                     found = true;
                     continue;
                 }
-                writer.write(currentLine + System.getProperty("line.separator"));
+                writer.write(currentLine + System.lineSeparator());
             }
-        } catch (IOException e) {
+            if (!found) {
+                System.out.println("Не нашли нужной строчки");
+                return;
+            }
+            writer.close();
+            reader.close();
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
 
-        if (inputFile.delete()) {
+        if (inputFile.delete())
+        {
             if (!tempFile.renameTo(inputFile)) {
                 System.out.println("Не удалось переименовать временный файл");
             }
-        } else {
+        } else
+        {
             System.out.println("Не удалось удалить исходный файл");
         }
     }
-
 
 }
