@@ -8,18 +8,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public abstract class DictionaryMain
-{
-    static void complete(String filename){// Запуск программы
+public abstract class DictionaryMain {
+    static void complete(String filename) {// Запуск программы
 
-         }
-    static void readFile (String filename){// Чтение из файла
-        try (FileReader reader = new FileReader(filename))
-        {
+    }
+
+    static void readFile(String filename) {// Чтение из файла
+        try (FileReader reader = new FileReader(filename)) {
             int c;
-            while ((c = reader.read())!=-1)
-            {
-                System.out.print((char)c);
+            while ((c = reader.read()) != -1) {
+                System.out.print((char) c);
             }
         } catch (FileNotFoundException e) {
             System.out.print(e.getMessage());
@@ -27,12 +25,12 @@ public abstract class DictionaryMain
             System.out.print(e.getMessage());
         }
     }
-    static void writeFile (String filename, HashMap hashMap){// Запись в файл
-        try(FileWriter writer = new FileWriter(filename,false)) {
+
+    static void writeFile(String filename, HashMap hashMap) {// Запись в файл
+        try (FileWriter writer = new FileWriter(filename, false)) {
             Set allstr = hashMap.entrySet(); // коллекция элементов, не допускающих дублирования
             Iterator iter = allstr.iterator();
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 Map.Entry me = (Map.Entry) iter.next();
                 writer.write(me.getKey() + " " + me.getValue());
                 writer.append('\n');
@@ -42,22 +40,15 @@ public abstract class DictionaryMain
             System.out.println(e.getMessage());
         }
     }
-    static void searchingKey (String filename, HashMap map){// Поиск по ключу
+
+    static void searchingKey(String filename, HashMap map) {// Поиск по ключу
 
     }
 
-    static void removeKey (String filename, HashMap map){// Удалить по ключу
+    static void removeKey(String filename, HashMap map) {// Удалить по ключу
 
     }
-    static void addForHashMap(String filename, HashMap hashMap){// Добавление в Map
 
-public interface DictionaryMain
-{
-    static void complete(String filename){} // Запуск программы
-    static void readFile (String filename){} // Чтение из файла
-    static void writeFile (String filename){} // Запись в файл
-    static void searchingKey (String filename, HashMap map){} // Поиск по ключу
-    static void removeKey (String filename, HashMap map){} // Удалить по ключу
-    static void addForHashMap(String filename, HashMap hashMap){}; // Добавление в Map
-
+    static void addForHashMap(String filename, HashMap hashMap) {// Добавление в Map
+    }
 }
