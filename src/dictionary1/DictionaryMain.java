@@ -1,7 +1,4 @@
 package dictionary1;
-
-import com.sun.tools.javac.Main;
-
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -134,46 +131,22 @@ public abstract class DictionaryMain
             System.out.print(e.getMessage());
         }
     }
-    static void writeFile (String filename, HashMap hashMap){// Запись в файл
-        try {
-            File file = new File(filename);
-            Scanner scanner = new Scanner(file);
-            Map<String,String> map = new LinkedHashMap<>();
-            while (scanner.hasNextLine())
+    static void writeFile (String filename, HashMap<String,String> hashMap,String k,String v){// Запись в файл
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+            for (HashMap.Entry<String,String> entry : hashMap.entrySet())
             {
-                String line = scanner.nextLine();
-                map.put(line,"");
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (!fileContains(writer, k, v,filename))
+                    deleteInFile(k,v,filename);
+                if (!fileContains(writer, key, value,filename)) {
+                    writer.write(key + " " + value);
+                    writer.newLine();
+                }
             }
-            scanner.close();
-            map.putAll(hashMap);
-            FileWriter writer = new FileWriter(filename,true);
-            Set allstr = hashMap.entrySet(); // коллекция элементов, не допускающих дублирования
-            Iterator iter = allstr.iterator();
-            while (iter.hasNext())
-            {
-                Map.Entry me = (Map.Entry) iter.next();
-                writer.write(me.getKey() + " " + me.getValue());
-                writer.append('\n');
-            }
-
-        }
-        catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        /*try(FileWriter writer = new FileWriter(filename,false)) {
-
-            Set allstr = hashMap.entrySet(); // коллекция элементов, не допускающих дублирования
-            Iterator iter = allstr.iterator();
-            while (iter.hasNext())
-            {
-                Map.Entry me = (Map.Entry) iter.next();
-                writer.write(me.getKey() + " " + me.getValue());
-                writer.append('\n');
-            }
-            writer.flush();
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }*/
+            e.printStackTrace();
+        }
     }
     static void searchingKey (String filename, HashMap map,String regex){// Поиск по ключу
         System.out.print("Введите значение ключа для удаления: ");
@@ -200,7 +173,7 @@ public abstract class DictionaryMain
         if (map.containsKey(key))
         {
             map.remove(key);
-            writeFile(filename, map);
+            writeFile(filename, map,key,(String)map.get(key));
             System.out.println("Значение удалено успешно");
         }
         else System.out.println("Такого значения в словаре нет");
@@ -218,7 +191,7 @@ public abstract class DictionaryMain
         {
             if (!hashMap.containsKey(key)) {
                 hashMap.put(key, value);
-                writeFile(filename, hashMap);
+                writeFile(filename, hashMap,"","");
                 System.out.println("Значение добавлено");
             }
             else System.out.println("Введенный ключ уже существует");
@@ -271,5 +244,49 @@ public abstract class DictionaryMain
         }
         return  map;
     }
+    private static boolean fileContains(BufferedWriter writer, String key, String value,String filename) throws IOException {
+        writer.flush(); // flush to ensure all data is written to the file
+        BufferedReader reader = new BufferedReader(new FileReader(filename));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            if (line.trim().equals(key + " " + value)) {
+                reader.close();
+                return true;
+            }
+        }
+        reader.close();
+        return false;
+    }
+
+    private static void deleteInFile(String key, String value,String filename) throws IOException {
+        File inputFile = new File(filename);
+        File tempFile = new File(inputFile.getParent() + "\\temp.txt");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+            String lineToRemove = key + " " + value;
+            String currentLine;
+            boolean found = false;
+
+            while ((currentLine = reader.readLine()) != null) {
+                if (currentLine.equals(lineToRemove) && !found) {
+                    found = true;
+                    continue;
+                }
+                writer.write(currentLine + System.getProperty("line.separator"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (inputFile.delete()) {
+            if (!tempFile.renameTo(inputFile)) {
+                System.out.println("Не удалось переименовать временный файл");
+            }
+        } else {
+            System.out.println("Не удалось удалить исходный файл");
+        }
+    }
+
 
 }
