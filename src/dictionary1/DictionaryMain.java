@@ -128,7 +128,6 @@ public abstract class DictionaryMain
             {
                 System.out.print((char)c);
             }
-            System.out.print("\n");
         } catch (FileNotFoundException e) {
             System.out.print(e.getMessage());
         } catch (IOException e) {
