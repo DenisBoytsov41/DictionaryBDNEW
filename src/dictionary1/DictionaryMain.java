@@ -6,12 +6,12 @@ import java.util.*;
 
 public abstract class DictionaryMain
 {
-    public static  String regeKey;
-    public static  String regeValue;
+    protected static  String regeKey;
+    protected static  String regeValue;
 
-    public static  int vrem = 0;
+    protected static  int vrem = 0;
 
-    public static HashMap<String,String> mapOsn = new LinkedHashMap();
+    protected static HashMap<String,String> mapOsn = new LinkedHashMap();
     static void complete(String filename) throws IOException {// Запуск программы
         mapOsn =createMap(filename);
         mainMenu(filename,mapOsn);
@@ -29,7 +29,8 @@ public abstract class DictionaryMain
             System.out.println("5 - Добавить запись");
             System.out.println("6 - Прочитать файл");
             System.out.println("7 - Выбор словаря");
-            System.out.println("8 - Выход");
+            System.out.println("8 - Выбор файла");
+            System.out.println("9 - Выход");
             Scanner in = new Scanner(System.in);
             int number = in.nextInt();
             switch (number) {
@@ -55,6 +56,12 @@ public abstract class DictionaryMain
                     workMain(filename);
                     break;
                 case 8:
+                    System.out.print("Введите путь к файлу: ");
+                    Scanner filen = new Scanner(System.in);
+                    filename = filen.nextLine();
+                    workMain(filename);
+                    break;
+                case 9:
                     System. exit(0);
                     break;
                 default:
@@ -62,7 +69,7 @@ public abstract class DictionaryMain
             }
         }
     }
-    public static HashMap<String,String> retateZnach(HashMap<String,String> map,int i,String filename) throws IOException {
+    private static HashMap<String,String> retateZnach(HashMap<String,String> map,int i,String filename) throws IOException {
         HashMap swapped = new LinkedHashMap();
         for (HashMap.Entry<String,String> enty: map.entrySet())
         {
@@ -117,7 +124,7 @@ public abstract class DictionaryMain
 
         return 0;
     }
-    static void readFile (String filename){// Чтение из файла
+    private static void readFile (String filename){// Чтение из файла
         try (FileReader reader = new FileReader(filename))
         {
             int c;
@@ -131,7 +138,7 @@ public abstract class DictionaryMain
             System.out.print(e.getMessage());
         }
     }
-    static void writeFile (String filename, HashMap<String,String> hashMap,String k,String v){// Запись в файл
+    private static void writeFile (String filename, HashMap<String,String> hashMap,String k,String v){// Запись в файл
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
             for (HashMap.Entry<String,String> entry : hashMap.entrySet())
             {
@@ -150,7 +157,7 @@ public abstract class DictionaryMain
             e.printStackTrace();
         }
     }
-    static void searchingKey (String filename, HashMap map,String regex){// Поиск по ключу
+    private static void searchingKey (String filename, HashMap map,String regex){// Поиск по ключу
         System.out.print("Введите значение ключа для удаления: ");
         Scanner scanner = new Scanner(System.in);
         String key= scanner.nextLine();
@@ -166,7 +173,7 @@ public abstract class DictionaryMain
         else System.out.println("Введены некорректные значения");
     }
 
-    static void removeKey (String filename, HashMap map){// Удалить по ключу
+    private static void removeKey (String filename, HashMap map){// Удалить по ключу
         System.out.print("Введите значение ключа для удаления: ");
         Scanner scanner = new Scanner(System.in);
         String key= scanner.nextLine();
@@ -181,7 +188,7 @@ public abstract class DictionaryMain
         }
         else System.out.println("Такого значения в словаре нет");
     }
-    static void addForHashMap(String filename, HashMap hashMap){// Добавление в Map
+    private static void addForHashMap(String filename, HashMap hashMap){// Добавление в Map
         System.out.print("Введите ключ: ");
         Scanner scanner1 = new Scanner(System.in);
         String key = scanner1.nextLine();
@@ -202,7 +209,7 @@ public abstract class DictionaryMain
         else System.out.println("Введены некорректные значения");
 
     }
-    public static void readHashMap(HashMap hashMap){
+    private static void readHashMap(HashMap hashMap){
         Set set = hashMap.entrySet();
         Iterator iter = set.iterator();
         // Отображаем элементы
@@ -213,7 +220,7 @@ public abstract class DictionaryMain
         }
         System.out.println();
     }
-    public static HashMap createMap(String filename) throws IOException
+    private static HashMap createMap(String filename) throws IOException
     {
         Path path = Paths.get(filename);
         Scanner scanner = new Scanner(path);
@@ -226,7 +233,7 @@ public abstract class DictionaryMain
         scanner.close();
         return map;
     }
-    public static HashMap chooseStr(String line, HashMap map)
+    private static HashMap chooseStr(String line, HashMap map)
     {
         Scanner scanner = new Scanner(line);
         String  key = "";
@@ -248,7 +255,7 @@ public abstract class DictionaryMain
         return  map;
     }
     private static boolean fileContains(BufferedWriter writer, String key, String value,String filename) throws IOException {
-        writer.flush(); // flush to ensure all data is written to the file
+        writer.flush();
         BufferedReader reader = new BufferedReader(new FileReader(filename));
         String line;
         while ((line = reader.readLine()) != null) {
