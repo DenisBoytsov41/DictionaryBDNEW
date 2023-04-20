@@ -1,76 +1,28 @@
-package dictionary1;
+package dictionares;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static dictionares.Main.mainMenu;
+
 public abstract class DictionaryMain
 {
-    protected static  String regeKey;
-    protected static  String regeValue;
+    public static  String regexKey;
+    protected static  String regexValue;
 
-    protected static  int vrem = 0;
+    protected static  int examination = 0;
 
-    protected static HashMap<String,String> mapOsn = new LinkedHashMap();
-    static void complete(String filename) throws IOException {// Запуск программы
-        mapOsn =createMap(filename);
-        mainMenu(filename,mapOsn);
+    protected static HashMap<String,String> mapMain = new LinkedHashMap();
+    public static void running(String filename) throws IOException {// Запуск программы
+        mapMain =createMap(filename);
+        mainMenu(filename, mapMain);
     }
     protected abstract void validate ();
 
-
-    public static void mainMenu (String filename,HashMap map) throws IOException {
-        while (true) {
-            System.out.println("Выберите операцию, которую вы хотите выполнить:");
-            System.out.println("1 - Записать значения в словарь");
-            System.out.println("2 - Прочитать весь словарь");
-            System.out.println("3 - Удалить запись по ключу");
-            System.out.println("4 - Поиск записи по ключу");
-            System.out.println("5 - Добавить запись");
-            System.out.println("6 - Прочитать файл");
-            System.out.println("7 - Выбор словаря");
-            System.out.println("8 - Выбор файла");
-            System.out.println("9 - Выход");
-            Scanner in = new Scanner(System.in);
-            int number = in.nextInt();
-            switch (number) {
-                case 1:
-                    complete(filename);
-                    break;
-                case 2:
-                    readHashMap(map);
-                    break;
-                case 3:
-                    removeKey(filename, map);
-                    break;
-                case 4:
-                    searchingKey(filename, map,regeKey);
-                    break;
-                case 5:
-                    addForHashMap(filename, map);
-                    break;
-                case 6:
-                    readFile(filename);
-                    break;
-                case 7:
-                    workMain(filename);
-                    break;
-                case 8:
-                    System.out.print("Введите путь к файлу: ");
-                    Scanner filen = new Scanner(System.in);
-                    filename = filen.nextLine();
-                    workMain(filename);
-                    break;
-                case 9:
-                    System. exit(0);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-    private static HashMap<String,String> retateZnach(HashMap<String,String> map,int i,String filename) throws IOException {
+   /* private static HashMap<String,String> retateZnach(HashMap<String,String> map,int i,String filename) throws IOException {
         HashMap swapped = new LinkedHashMap();
+        complete(filename);
         for (HashMap.Entry<String,String> enty: map.entrySet())
         {
             swapped.put(enty.getValue(),enty.getKey());
@@ -83,7 +35,7 @@ public abstract class DictionaryMain
             DictionarySecondTapy dst = new DictionarySecondTapy();
         }
         return map;
-    }
+    }*/
     public static int workMain(String filename)
     {
         try {
@@ -94,24 +46,14 @@ public abstract class DictionaryMain
             int number = choose.nextInt();
             switch (number) {
                 case 1:
-                    if (vrem != number && vrem!=0) {
-                        vrem = number;
-                        mapOsn = retateZnach(mapOsn,number,filename);
-                    }
-                    else {
-                        vrem = number;
-                        DictionaryFirstTapy dft = new DictionaryFirstTapy(filename);
-                    }
+                    examination = number;
+                    mapMain.clear();
+                    DictionaryFirstTapy dft = new DictionaryFirstTapy(filename);
                     return number;
                 case 2:
-                    if (vrem != number && vrem!=0) {
-                        vrem = number;
-                        mapOsn = retateZnach(mapOsn,number,filename);
-                    }
-                    else {
-                        vrem = number;
-                        DictionarySecondTapy dst = new DictionarySecondTapy(filename);
-                    }
+                    examination = number;
+                    mapMain.clear();
+                    DictionarySecondTapy dst = new DictionarySecondTapy(filename);
                     return number;
                 default:
                     break;
@@ -124,7 +66,7 @@ public abstract class DictionaryMain
 
         return 0;
     }
-    private static void readFile (String filename){// Чтение из файла
+    public static void readFile(String filename){// Чтение из файла
         try (FileReader reader = new FileReader(filename))
         {
             int c;
@@ -157,7 +99,7 @@ public abstract class DictionaryMain
             e.printStackTrace();
         }
     }
-    private static void searchingKey (String filename, HashMap map,String regex){// Поиск по ключу
+    public static void searchingKey(String filename, HashMap map, String regex){// Поиск по ключу
         System.out.print("Введите значение ключа для удаления: ");
         Scanner scanner = new Scanner(System.in);
         String key= scanner.nextLine();
@@ -173,7 +115,7 @@ public abstract class DictionaryMain
         else System.out.println("Введены некорректные значения");
     }
 
-    private static void removeKey (String filename, HashMap map){// Удалить по ключу
+    public static void removeKey(String filename, HashMap map){// Удалить по ключу
         System.out.print("Введите значение ключа для удаления: ");
         Scanner scanner = new Scanner(System.in);
         String key= scanner.nextLine();
@@ -188,7 +130,7 @@ public abstract class DictionaryMain
         }
         else System.out.println("Такого значения в словаре нет");
     }
-    private static void addForHashMap(String filename, HashMap hashMap){// Добавление в Map
+    public static void addForHashMap(String filename, HashMap hashMap){// Добавление в Map
         System.out.print("Введите ключ: ");
         Scanner scanner1 = new Scanner(System.in);
         String key = scanner1.nextLine();
@@ -197,7 +139,7 @@ public abstract class DictionaryMain
         Scanner scanner2 = new Scanner(System.in);
         String value = scanner2.nextLine();
         value = value.trim();
-        if ( key.matches(regeKey) && value.matches(regeValue))
+        if ( key.matches(regexKey) && value.matches(regexValue))
         {
             if (!hashMap.containsKey(key)) {
                 hashMap.put(key, value);
@@ -209,7 +151,7 @@ public abstract class DictionaryMain
         else System.out.println("Введены некорректные значения");
 
     }
-    private static void readHashMap(HashMap hashMap){
+    public static void readHashMap(HashMap hashMap){
         Set set = hashMap.entrySet();
         Iterator iter = set.iterator();
         // Отображаем элементы
@@ -224,7 +166,7 @@ public abstract class DictionaryMain
     {
         Path path = Paths.get(filename);
         Scanner scanner = new Scanner(path);
-        HashMap map = mapOsn;
+        HashMap map = mapMain;
         scanner.useDelimiter("\n");
         while (scanner.hasNext())
         {
@@ -240,7 +182,7 @@ public abstract class DictionaryMain
         String value = "";
         key = scanner.next();
         value = scanner.next();
-        if((key.matches(regeKey) && (value.matches(regeValue))))
+        if((key.matches(regexKey) && (value.matches(regexValue))))
         {
             if (map.containsKey(key))
             {
